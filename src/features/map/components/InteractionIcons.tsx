@@ -1,0 +1,5 @@
+import type { SVGProps } from "react";
+const base = { fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+export function StarIcon(props: SVGProps<SVGSVGElement> & { filled?: boolean }) { const { filled, ...rest } = props; return <svg viewBox="0 0 24 24" aria-hidden {...base} {...rest}><path fill={filled ? "currentColor" : "none"} d="M12 2.8 13.55 10.45 21.2 12 13.55 13.55 12 21.2 10.45 13.55 2.8 12 10.45 10.45Z" /></svg>; }
+export function SaveIcon(props: SVGProps<SVGSVGElement> & { filled?: boolean }) { const { filled, ...rest } = props; return <svg viewBox="0 0 24 24" aria-hidden {...base} {...rest}><path fill={filled ? "currentColor" : "none"} d="M5.5 3.5h11.2l1.8 1.8v15.2H5.5z"/><path d="M8 3.5h7.5v4.2H8zM7.2 12.2h9.6V19H7.2z"/></svg>; }
+export function ShareIcon(props: SVGProps<SVGSVGElement>) { return <svg viewBox="0 0 24 24" aria-hidden {...base} {...props}><path d="m9.5 14.5 9-9M11.2 5.5h7.3v7.3M8.2 7.5H6.5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1.7"/></svg>; }

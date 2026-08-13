@@ -1,0 +1,32 @@
+{
+  "packId": "pack_bm_2026_demo",
+  "name": "Burning Man 2026 Demo Pack",
+  "eventYear": 2026,
+  "formatVersion": "playa-pack-0.1.0",
+  "contentVersion": "2026.1.0",
+  "createdAt": "2026-06-01T00:00:00.000Z",
+  "updatedAt": "2026-06-15T00:00:00.000Z",
+  "files": [
+    {
+      "path": "sidequests.json",
+      "role": "sidequests",
+      "byteSize": 1798,
+      "checksumSha256": "37e003de63b8950497c1c36bbee6209a3b7c44e461ff76b101739a681c6dc744"
+    },
+    {
+      "path": "event.json",
+      "role": "event",
+      "byteSize": 358,
+      "checksumSha256": "58a57371d7ed2ee2a16762828d91986e903fdc17256d9492093ba5f45b9e0d6b"
+    },
+    {
+      "path": "map-package.json",
+      "role": "map_ref",
+      "byteSize": 813,
+      "checksumSha256": "76730dcea25ffd5013da9f6a0523a7d2f3583da8fedb1424a40ea97b6d0250f0"
+    }
+  ],
+  "totalByteSize": 2969,
+  "mapPackageId": "bm-2026-demo-map",
+  "description": "Fictional demo offline dataset for SIDEBURNS playa-pack + offline MapLibre basemap prototype."
+}

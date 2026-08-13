@@ -1,0 +1,26 @@
+---
+description: Core SIDEBURNS architecture - features, providers, thin routes, no foreign product coupling
+alwaysApply: true
+---
+
+# Architecture
+
+SIDEBURNS is a **standalone** offline-first field app. Never import from or modify `C:\Users\camch\OneDrive\Documents\Artelier`. Do not copy registry, admin, ecommerce, ingestion, publishing, or resume product surface.
+
+## Boundaries
+
+- Significant business logic lives in `src/features/*` (services, repositories, utils, schemas).
+- Route pages in `src/routes/*` stay thin: compose feature hooks/components; no heavy domain logic.
+- UI must not call Supabase or other remote clients directly.
+- Data access goes through typed `*Provider` / `*Repository` / feature services.
+- External API and DB response shapes stay in adapters; map to domain types before UI.
+- Validate at storage, API, import, env, and sync boundaries with Zod.
+- Provider implementations must be replaceable; wire selection in `src/data/adapters` / `src/app/providers.tsx`.
+- Preserve sample-data mode (`VITE_DATA_PROVIDER=sample`) without Supabase credentials.
+
+## Do not
+
+- Leak remote DTOs into React components.
+- Claim `supabase` mode is live remote data while adapters still use sample providers (see known issue in root `AGENTS.md`).
+- Broadly refactor the preservation baseline (`66aa777`) without explicit approval.
+- Implement later roadmap phases as drive-by work (IndexedDB → PWA → packs → maps → GPS → offline CRUD → sync → Bluetooth).

@@ -1,0 +1,75 @@
+import type { Sidequest } from "@/features/sidequests/types/sidequest";
+import { parseSidequest } from "@/features/sidequests/types/sidequest";
+
+/** Fictional sample sidequests for provider / shell smoke tests. Not real BM content. */
+export const SAMPLE_SIDEQUESTS: Sidequest[] = [
+  parseSidequest({
+    id: "sq_sample_lantern_grove",
+    title: "Lantern Grove Echo",
+    description:
+      "Fictional: follow the chalk arrows to a cluster of solar lanterns and leave a one-word note in the guest book.",
+    location: { latitude: 40.7864, longitude: -119.2065 },
+    radiusMeters: 40,
+    category: "art",
+    availability: "nighttime",
+    difficulty: "easy",
+    createdAt: "2026-01-01T00:00:00.000Z",
+    updatedAt: "2026-01-01T00:00:00.000Z",
+    syncStatus: "synced",
+    packId: "pack_sample_2026",
+    origin: "sample",
+    completionRule: "open",
+  }),
+  parseSidequest({
+    id: "sq_sample_dust_compass",
+    title: "Dust Compass Calibration",
+    description:
+      "Fictional: stand at the marked stake, face the Man, and log your compass bearing in the quest notes.",
+    location: { latitude: 40.7829, longitude: -119.1988 },
+    radiusMeters: 25,
+    category: "explore",
+    availability: "daytime",
+    difficulty: "moderate",
+    createdAt: "2026-01-01T00:00:00.000Z",
+    updatedAt: "2026-01-01T00:00:00.000Z",
+    syncStatus: "synced",
+    packId: "pack_sample_2026",
+    origin: "sample",
+    completionRule: "proximity",
+  }),
+  parseSidequest({
+    id: "sq_sample_tea_stop",
+    title: "Mirage Tea Stop",
+    description:
+      "Fictional: visit the pop-up shade structure serving mint tea and thank a volunteer (no real camp).",
+    location: { latitude: 40.7901, longitude: -119.2112 },
+    radiusMeters: 30,
+    category: "service",
+    availability: "always",
+    difficulty: "easy",
+    createdAt: "2026-01-01T00:00:00.000Z",
+    updatedAt: "2026-01-01T00:00:00.000Z",
+    syncStatus: "synced",
+    packId: "pack_sample_2026",
+    origin: "sample",
+    completionRule: "open",
+  }),
+  parseSidequest({
+    id: "sq_sample_rumor_camp",
+    title: "Rumor Camp Wandering",
+    description:
+      "Fictional: approximate only — ask around for a camp that may host a quiet listening circle after midnight.",
+    location: { latitude: 40.788, longitude: -119.2, accuracyMeters: 400 },
+    radiusMeters: 80,
+    category: "camp",
+    availability: "nighttime",
+    difficulty: "challenging",
+    createdAt: "2026-01-01T00:00:00.000Z",
+    updatedAt: "2026-01-01T00:00:00.000Z",
+    syncStatus: "synced",
+    packId: "pack_sample_2026",
+    placementKind: "approximate",
+    origin: "sample",
+    completionRule: "open",
+  }),
+];

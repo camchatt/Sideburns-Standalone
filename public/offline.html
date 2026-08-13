@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#1a1714" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="SIDEBURNS" />
+    <title>SIDEBURNS — Offline</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f1eb;
+        --fg: #1a1714;
+        --muted: #5c534a;
+      }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(ellipse 120% 80% at 10% -10%, #e8dcd0 0%, transparent 55%),
+          linear-gradient(180deg, var(--bg) 0%, #e4d8c8 100%);
+        color: var(--fg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding:
+          max(1.5rem, env(safe-area-inset-top))
+          max(1.5rem, env(safe-area-inset-right))
+          max(1.5rem, env(safe-area-inset-bottom))
+          max(1.5rem, env(safe-area-inset-left));
+      }
+      main {
+        max-width: 28rem;
+      }
+      h1 {
+        font-size: 2.5rem;
+        letter-spacing: 0.12em;
+        margin: 0 0 0.75rem;
+      }
+      p {
+        font-family: system-ui, sans-serif;
+        line-height: 1.5;
+        color: var(--muted);
+        margin: 0 0 1rem;
+      }
+      a {
+        color: var(--fg);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>SIDEBURNS</h1>
+      <p>
+        You are offline and this page is not in the application shell cache yet.
+        Open SIDEBURNS once while online so the shell can be stored on this device.
+      </p>
+      <p>
+        Local quests and saves already on this device remain in IndexedDB and are
+        not deleted by updates.
+      </p>
+      <p><a href="/">Try the app shell</a></p>
+    </main>
+  </body>
+</html>

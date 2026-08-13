@@ -1,0 +1,29 @@
+---
+description: MapProvider isolation, GPS baseline states, optional Bluetooth never blocks core flows
+globs: src/features/map/**,src/features/location/**,src/features/proximity/**,public/maps/**
+alwaysApply: false
+---
+
+# Maps, location, and proximity
+
+## Maps
+
+- Load map data only behind `MapProvider`. Presentation tech (Leaflet / MapLibre / etc.) stays out of unrelated domain features.
+- Do not assume online tile access; design for packaged / PMTiles offline sources.
+- Packaged maps must be **versioned** and **checksum-validated**; large downloads should be **resumable**.
+- Avoid embedding map-engine-specific types throughout sidequests, sync, or routes.
+
+## GPS and proximity
+
+- GPS is the universal baseline for proximity.
+- Model permission, unavailable, denied, inaccurate, stale, and simulated readings as **distinct states** (`LocationLifecycleState` in `src/features/location`).
+- Require an explicit user opt-in before `watchPosition` / permission prompts; GPS must never be required to open the app.
+- Do not assume background GPS support in the browser/PWA (including iOS home-screen installs).
+- Keep proximity logic deterministic and independently testable (pure utils + fixtures); gate on usable accuracy/freshness.
+- Keep GPS proximity separate from Bluetooth proximity at the type and provider level.
+
+## Bluetooth
+
+- Optional, feature-detected, behind `VITE_ENABLE_BLUETOOTH_EXPERIMENT`.
+- Must never block GPS, startup, or core sidequest create/complete flows.
+- Do not assume Web Bluetooth works on iOS.

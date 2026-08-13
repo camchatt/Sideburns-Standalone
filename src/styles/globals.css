@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap');
+
+@font-face {
+  font-family: 'Creattion Demo';
+  src: url('/fonts/CreattionDemo.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stencilia Bold';
+  src: url('/fonts/StenciliaBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 28 24% 96%;
+    --foreground: 20 10% 10%;
+
+    --card: 30 25% 98%;
+    --card-foreground: 20 10% 10%;
+
+    --popover: 30 25% 98%;
+    --popover-foreground: 20 10% 10%;
+
+    --primary: 20 10% 10%;
+    --primary-foreground: 30 25% 98%;
+
+    --secondary: 32 18% 90%;
+    --secondary-foreground: 20 10% 10%;
+
+    --muted: 30 12% 90%;
+    --muted-foreground: 20 8% 40%;
+
+    --accent: 185 72% 38%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 28 12% 82%;
+    --input: 28 12% 82%;
+    --ring: 185 72% 38%;
+
+    --radius: 0.25rem;
+
+    --sidebar-background: 28 20% 95%;
+    --sidebar-foreground: 20 10% 18%;
+    --sidebar-primary: 20 10% 10%;
+    --sidebar-primary-foreground: 30 25% 98%;
+    --sidebar-accent: 30 12% 90%;
+    --sidebar-accent-foreground: 20 10% 10%;
+    --sidebar-border: 28 12% 82%;
+    --sidebar-ring: 185 72% 38%;
+
+    --kiwi-teal: 185 72% 38%;
+    --kiwi-warm: 32 28% 92%;
+
+    --playa-dusk: 18 22% 88%;
+    --playa-dust: 35 20% 84%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-wider;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.playa-shell {
+  background:
+    radial-gradient(ellipse 120% 80% at 10% -10%, hsl(var(--playa-dusk)) 0%, transparent 55%),
+    radial-gradient(ellipse 90% 60% at 100% 0%, hsl(var(--kiwi-teal) / 0.12) 0%, transparent 45%),
+    linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--playa-dust)) 100%);
+  min-height: 100dvh;
+}

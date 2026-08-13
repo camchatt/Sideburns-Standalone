@@ -1,0 +1,17 @@
+---
+description: Offline-first source of truth, local-before-remote writes, connectivity-independent startup
+alwaysApply: true
+---
+
+# Offline-first
+
+- **Local storage is the immediate source of truth** while the user is in session.
+- Create and update operations must **save locally before** any remote synchronization attempt.
+- Connectivity must **never** be required to open or use core app shell routes.
+- Sample-data mode must remain fully usable without network or Supabase credentials.
+- Failed and conflicting sync operations must be **preserved**; never silently discard pending work.
+- Treat storage persistence denial (`navigator.storage.persist`) as **non-fatal**; warn in readiness UI when present.
+- Partial playa-pack downloads must stay `incomplete` and must **not** become active datasets.
+- Prefer designing failure, empty, offline, and unsupported states alongside the happy path.
+
+When adding features, ask: “Does this still work with no network and only local/sample data?” If not, redesign.

@@ -1,0 +1,35 @@
+---
+description: Required verification commands, focused test areas, never claim checks without running them
+alwaysApply: true
+---
+
+# Testing and verification
+
+## Normal implementation work
+
+Run before declaring done:
+
+```text
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
+
+Pure agent-guidance / docs-only tasks may skip app verification **if** nothing under `src/`, configs, or test tooling changed - state that explicitly. Never claim a check passed unless it ran successfully.
+
+## Prefer focused tests for
+
+- IndexedDB migrations
+- Atomic local write + outbox insertion
+- Offline startup / open without network
+- Failed synchronization and conflict preservation
+- Provider selection (sample vs supabase config honesty)
+- Sample-data operation without credentials
+- Cache version upgrades
+- Partial playa-pack recovery (incomplete ≠ active)
+- GPS accuracy and permission states
+- Simulated proximity
+- Direct route refresh behavior
+
+Colocate unit tests as `*.test.ts(x)` near the code. Use `src/test/` helpers/fixtures for shared setup.

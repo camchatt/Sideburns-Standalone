@@ -1,0 +1,16 @@
+---
+description: Git safety - preserve work, no destructive git, no commit/push unless requested
+alwaysApply: true
+---
+
+# Git safety
+
+- Inspect `git status` before making changes; preserve existing user and agent work.
+- Never `reset --hard`, `clean -fd`, rebase, force-push, or discard changes without **explicit** approval.
+- Do not modify unrelated files. Keep architectural work, dependency upgrades, and product features separable.
+- Do **not** commit or push unless the user explicitly asks.
+- Do not commit `.env`, credentials, local databases, `dist`/builds, map downloads, or `node_modules`.
+- Do not invent or reconfigure remotes (this repo may have no GitHub remote yet).
+- Do not modify the Artelier repository on disk or its remotes/branches from SIDEBURNS tasks.
+- When commits are requested: follow the user’s commit protocol; keep messages focused on why; never `--no-verify` unless asked.
+- Keep documentation synchronized when architectural boundaries change.

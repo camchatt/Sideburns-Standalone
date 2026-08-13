@@ -1,0 +1,33 @@
+{
+  "id": "sample-playa-basemap",
+  "label": "Sample playa basemap",
+  "formatVersion": "sideburn-map-0.1.0",
+  "contentVersion": "0.0.1",
+  "engine": "maplibre",
+  "bounds": {
+    "north": 40.807,
+    "south": 40.75,
+    "east": -119.17,
+    "west": -119.27
+  },
+  "center": [-119.205, 40.78],
+  "zoom": 13,
+  "minZoom": 11,
+  "maxZoom": 18,
+  "assets": [],
+  "style": {
+    "version": 8,
+    "name": "SIDEBURNS sample offline",
+    "sources": {},
+    "layers": [
+      {
+        "id": "background",
+        "type": "background",
+        "paint": {
+          "background-color": "#2a241c"
+        }
+      }
+    ]
+  },
+  "notes": "Bundled sample offline style. No tile payload; usable without network or credentials."
+}
