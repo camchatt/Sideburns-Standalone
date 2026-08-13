@@ -24,6 +24,12 @@ describe("application shell", () => {
     expect(
       screen.getByRole("img", { name: "A reminder to rest until tomorrow" }),
     ).toHaveAttribute("src", "/images/sleep-until-tomorrow.jpg");
+    expect(
+      screen.getByText(
+        "This is currently pulling from the Sideburns Git repository, not the sidequester branch of Artelier.",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Open the main page" })).toHaveAttribute("href", "/app");
   });
 
   it("renders SIDEBURNS branding and map-first chrome on /app", async () => {
