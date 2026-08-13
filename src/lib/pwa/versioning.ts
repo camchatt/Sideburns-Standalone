@@ -1,5 +1,5 @@
 /** Version tokens for shell caches vs pack / map formats. Bump deliberately. */
-export const APP_SHELL_CACHE_VERSION = "sideburn-shell-0.3.0";
+export const APP_SHELL_CACHE_VERSION = "sideburn-shell-0.3.1";
 export const PLAYA_PACK_FORMAT_VERSION = "playa-pack-0.1.0";
 export const SIDEBURNS_MAP_FORMAT_VERSION = "sideburn-map-0.1.0";
 export const SAMPLE_DATA_VERSION = "sample-data-0.1.0";
