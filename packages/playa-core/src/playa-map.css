@@ -1,0 +1,385 @@
+.playa-map .leaflet-container {
+  background: #2a241c;
+  font: inherit;
+}
+
+/*
+ * Warm grade on tile *containers*, not the pane.
+ * A filter on `.leaflet-tile-pane` promotes it to its own compositor layer and
+ * makes Man / rings / pins hitch for a frame while panning.
+ */
+.playa-map .leaflet-tile-pane .leaflet-tile-container {
+  filter: sepia(0.18) saturate(0.92) contrast(1.06) brightness(0.92);
+}
+
+.playa-map .leaflet-tile-pane .leaflet-tile {
+  filter: none !important;
+}
+
+.playa-map .leaflet-control-attribution {
+  display: none;
+}
+
+/* Hide leaflet-rotate’s default square control — we use our own compass. */
+.playa-map .leaflet-control-rotate {
+  display: none !important;
+}
+
+/* Cream rounded-square chrome — flat Google-style map controls. */
+.playa-zoom-stack {
+  display: flex;
+  width: 2.75rem;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #f4f0e8;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+}
+
+.playa-zoom-stack .playa-zoom-btn {
+  width: 100%;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.playa-zoom-stack .playa-zoom-btn + .playa-zoom-btn {
+  border-top: 1px solid rgba(63, 69, 76, 0.12);
+}
+
+.playa-zoom-btn {
+  display: flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 14px;
+  background: #f4f0e8;
+  color: #3f454c;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.playa-zoom-btn:active {
+  background: #ebe6dc;
+}
+
+.playa-zoom-btn:hover {
+  background: #ebe6dc;
+}
+
+.playa-zoom-btn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.playa-locate-btn {
+  height: 2.75rem;
+  width: 2.75rem;
+  border-radius: 14px;
+  background: rgba(244, 240, 232, 0.88);
+  box-shadow: 0 1px 3px rgba(23, 19, 15, 0.16);
+}
+
+.playa-locate-btn svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.playa-locate-btn:hover,
+.playa-locate-btn:active {
+  background: rgba(244, 240, 232, 0.68);
+}
+
+.playa-locate-btn.is-active {
+  background: rgba(63, 69, 76, 0.62);
+  color: #5eb0ff;
+  box-shadow: none;
+}
+
+.playa-compass-btn {
+  background: rgba(244, 240, 232, 0.38);
+  box-shadow: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #3f454c;
+}
+
+.playa-compass-btn:hover,
+.playa-compass-btn:active {
+  background: rgba(244, 240, 232, 0.52);
+}
+
+.playa-compass-btn.is-active {
+  background: rgba(63, 69, 76, 0.55);
+  color: #f4f0e8;
+  box-shadow: none;
+}
+
+.playa-locate-btn.is-locating {
+  animation: playa-locate-pulse 1s ease-in-out infinite;
+}
+
+.playa-locate-status {
+  border-radius: 0.75rem;
+  background: #f4f0e8;
+  color: #3f454c;
+  font-size: 10px;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  padding: 0.4rem 0.55rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+}
+
+.playa-user-tooltip {
+  border-color: rgba(94, 176, 255, 0.65) !important;
+}
+
+.playa-friend-tooltip {
+  border-color: rgba(232, 145, 46, 0.7) !important;
+}
+
+.playa-map--placing .leaflet-container {
+  cursor: crosshair;
+}
+
+.playa-beacon-tooltip {
+  border-color: rgba(248, 245, 238, 0.45) !important;
+  max-width: 12rem;
+}
+
+.playa-beacon-pin.is-selected {
+  filter: drop-shadow(0 0 6px rgba(248, 245, 238, 0.45));
+}
+
+/* Quests this device has finished stay visible but recede. */
+.playa-beacon-pin.is-complete:not(.is-selected) {
+  opacity: 0.5;
+}
+
+.playa-beacon-pin.is-live {
+  animation: playa-beacon-live 1.6s ease-in-out infinite;
+}
+
+.playa-hunt-pin.is-emphasized:not(.is-complete) {
+  animation: playa-hunt-emphasize 1.5s ease-in-out infinite;
+}
+
+@keyframes playa-hunt-emphasize {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 2px rgba(196, 69, 105, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(196, 69, 105, 0.95));
+  }
+}
+
+@keyframes playa-beacon-live {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 2px rgba(248, 245, 238, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(232, 255, 26, 0.85));
+  }
+}
+
+.playa-beacon-pin.is-live.is-selected {
+  animation: playa-beacon-live-selected 1.6s ease-in-out infinite;
+}
+
+@keyframes playa-beacon-live-selected {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 6px rgba(248, 245, 238, 0.45));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(232, 255, 26, 0.95));
+  }
+}
+
+@keyframes playa-locate-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.playa-clock-label,
+.playa-man-label,
+.playa-art-tooltip {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #f4e7c8 !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85) !important;
+  padding: 0 !important;
+}
+
+.playa-man-label {
+  color: #f8f5ee !important;
+  letter-spacing: 0.18em !important;
+}
+
+.playa-art-tooltip {
+  background: rgba(23, 19, 15, 0.88) !important;
+  border: 1px solid rgba(244, 231, 200, 0.35) !important;
+  color: #f8f5ee !important;
+  letter-spacing: 0.04em !important;
+  text-transform: none !important;
+  padding: 0.4rem 0.55rem !important;
+  border-radius: 2px !important;
+  text-shadow: none !important;
+}
+
+.playa-art-tooltip::before {
+  display: none !important;
+}
+
+.leaflet-tooltip-top.playa-man-label::before,
+.leaflet-tooltip-top.playa-clock-label::before {
+  display: none !important;
+}
+
+.playa-selected-tooltip {
+  border-color: rgba(248, 245, 238, 0.7) !important;
+  background: rgba(23, 19, 15, 0.94) !important;
+  font-size: 12px !important;
+}
+
+.playa-map .playa-selected-halo {
+  animation: playa-selected-pulse 1.8s ease-out infinite;
+}
+
+@keyframes playa-selected-pulse {
+  0% {
+    opacity: 0.85;
+    stroke-width: 1.5;
+  }
+  70% {
+    opacity: 0.15;
+    stroke-width: 3;
+  }
+  100% {
+    opacity: 0;
+    stroke-width: 3;
+  }
+}
+
+/* Service layer — circular marks (paint only; MapTapRouter owns taps). */
+.playa-service-pin-wrap {
+  background: transparent !important;
+  border: none !important;
+  pointer-events: none !important;
+}
+
+.playa-service-shape {
+  position: relative;
+  display: block;
+  width: var(--pin-size, 30px);
+  height: var(--pin-size, 30px);
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.28));
+}
+
+.playa-service-shape__outline,
+.playa-service-shape__face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--pin-size, 30px);
+  height: var(--pin-size, 30px);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.playa-service-shape__face {
+  top: 1px;
+  left: 1px;
+  width: calc(var(--pin-size, 30px) - 2px);
+  height: calc(var(--pin-size, 30px) - 2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playa-service-shape__face svg {
+  display: block;
+  overflow: visible;
+  fill: currentColor;
+}
+
+/* Festival infrastructure — mid-blue face, white filled pictogram */
+.playa-service-shape.is-festival .playa-service-shape__outline {
+  background: #3d8fc4;
+}
+
+.playa-service-shape.is-festival .playa-service-shape__face {
+  color: #ffffff;
+  background: #3d8fc4;
+}
+
+/* User-generated service — cream face, solid ink heart */
+.playa-service-shape.is-user .playa-service-shape__outline {
+  background: #8b5fbf;
+}
+
+.playa-service-shape.is-user .playa-service-shape__face {
+  color: #3f454c;
+  background: #f4f0e8;
+}
+
+.playa-service-shape.is-selected {
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.35));
+}
+
+.playa-service-shape.is-festival.is-selected .playa-service-shape__outline {
+  background: #f4f0e8;
+}
+
+.playa-service-shape.is-user.is-selected .playa-service-shape__outline {
+  background: #ffffff;
+}
+
+/* Sets layer — paint only; MapTapRouter owns taps. */
+.playa-set-pin-wrap.leaflet-marker-icon,
+.playa-set-pin-wrap {
+  background: transparent !important;
+  border: none !important;
+  pointer-events: none !important;
+}
+
+.playa-set-shape {
+  position: relative;
+  display: block;
+  width: var(--pin-size, 28px);
+  height: var(--pin-size, 28px);
+  pointer-events: none;
+}
+
+.playa-set-shape__face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-sizing: border-box;
+  pointer-events: none;
+  background: var(--pin-color, #c8ff00);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.playa-set-shape.is-selected .playa-set-shape__face {
+  box-shadow:
+    0 0 0 2px rgba(244, 240, 232, 0.9),
+    0 1px 5px rgba(0, 0, 0, 0.4);
+}

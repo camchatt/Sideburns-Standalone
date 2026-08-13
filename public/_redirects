@@ -1,4 +1,0 @@
-# SPA history-fallback for Netlify / Cloudflare Pages static hosts.
-# Copied into dist/ via Vite public/. Existing files win over this rule.
-# See docs/deployment.md.
-/*    /index.html   200
