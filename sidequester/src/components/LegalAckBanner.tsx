@@ -63,9 +63,10 @@ export function LegalAckBanner() {
             </p>
             <p>
               <strong className="text-[#ffb14a]">Find.</strong> Need a tool during
-              build week? Someone might have it. Need a porto immediately? Find
-              one. Stumble across something incredible at 3 a.m. and have no idea
-              what you just saw? Someone else might know.
+              build week? Someone on playa has it, and we’ll help you find them.
+              In deep playa and need to take a shit right now? Find the nearest
+              porto. Stumble across something incredible at 3 a.m. and have no
+              idea what the hell you just saw? Find that too.
             </p>
             <p>
               <strong className="text-[#ffb14a]">Contribute.</strong> Anyone can
