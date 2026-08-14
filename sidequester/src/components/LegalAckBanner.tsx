@@ -43,7 +43,7 @@ export function LegalAckBanner() {
       >
         <div className="w-full max-w-2xl py-[max(1rem,env(safe-area-inset-top))]">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#ffb14a]">
-            A living layer of Black Rock City
+            A living layer of BRC
           </p>
           <h1 className="mt-2 font-['Bebas_Neue'] text-6xl uppercase leading-none tracking-[0.035em] text-white sm:text-7xl">
             Sideburns
