@@ -28,7 +28,7 @@ export function LegalAckBanner() {
 
   return (
     <div
-      className="absolute inset-0 z-[580] overflow-y-auto bg-[#120d09] text-[#fff8eb]"
+      className="fixed inset-0 z-[580] overflow-y-auto bg-[#120d09] text-[#fff8eb]"
       style={{
         backgroundImage:
           "linear-gradient(90deg, rgba(12,8,6,0.96) 0%, rgba(12,8,6,0.88) 38%, rgba(12,8,6,0.45) 72%, rgba(12,8,6,0.68) 100%), url('/burning-effigy.gif')",
