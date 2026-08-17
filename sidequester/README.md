@@ -30,3 +30,10 @@ Copy `.env.example` → `.env.local`:
 - Beacons and quests persist in `localStorage` on this origin
 - Multi-device pin sync requires the beacons Supabase keys above
 - `base: "./"` so Capacitor can load assets from the local webview
+
+## Official Burning Man API
+
+The API key belongs only in the Supabase Edge Function secret named
+`BURNING_MAN_API_KEY`; never add it to a `VITE_*` variable. The importer,
+protected storage, embargo-aware public view, and setup instructions live in
+`supabase/functions/import-burning-man/` and `supabase/burning_man_api.sql`.
