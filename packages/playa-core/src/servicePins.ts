@@ -73,8 +73,9 @@ export function createServicePinIcon(
   kind: ServiceLayerKind,
   selected = false,
   size = 20,
+  visualOffsetX = 0,
 ): L.DivIcon {
-  const cacheKey = `fa6-round:${kind}:${selected ? "1" : "0"}:${size}`;
+  const cacheKey = `fa6-round:${kind}:${selected ? "1" : "0"}:${size}:${visualOffsetX}`;
   const cached = iconCache.get(cacheKey);
   if (cached) return cached;
 
@@ -86,7 +87,7 @@ export function createServicePinIcon(
   const icon = L.divIcon({
     className: "playa-service-pin-wrap",
     iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
+    iconAnchor: [size / 2 - visualOffsetX, size / 2],
     popupAnchor: [0, -(size / 2 + 4)],
     html: `
       <span class="playa-service-shape ${tone} ${selected ? "is-selected" : ""}"
@@ -100,4 +101,13 @@ export function createServicePinIcon(
 
   iconCache.set(cacheKey, icon);
   return icon;
+}
+
+/** Spread co-located plaza safety services while retaining their map anchor. */
+export function officialSafetyPinVisualOffsetX(id: string): number {
+  if (!id.startsWith("official-2026-safety-")) return 0;
+  if (!id.endsWith("-3-c") && !id.endsWith("-9-c")) return 0;
+  if (id.includes("-medical-")) return -20;
+  if (id.includes("-ranger-")) return 20;
+  return 0;
 }

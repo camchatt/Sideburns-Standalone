@@ -13,6 +13,7 @@ import {
   CircleMarker,
   MapContainer,
   Marker,
+  Polygon,
   Polyline,
   TileLayer,
   Tooltip,
@@ -27,10 +28,12 @@ import {
   manCenterForYear,
   playaRingLatLngs,
   type LatLng,
+  type PlayaMapDataMode,
 } from "./geo";
 import type { BurningManProject } from "./placements";
 import {
   createServicePinIcon,
+  officialSafetyPinVisualOffsetX,
   servicePinSizeForZoom,
 } from "./servicePins";
 import { createSetPinIcon, setPinSizeForZoom } from "./setPins";
@@ -176,11 +179,22 @@ export type PlayaMapPointLike<T extends PlayaMappableProject = PlayaMappableProj
   kind: "exact" | "approximate";
 };
 
+export type PlayaMapArea = {
+  id: string;
+  rings: LatLng[][];
+};
+
 type PlayaMapProps<T extends PlayaMappableProject = BurningManProject> = {
   points: PlayaMapPointLike<T>[];
   selectedProject: T | null;
   years: number[];
   onSelect: (project: T) => void;
+  /** Official surveyed geometry, or the preserved schematic fallback. */
+  mapDataMode?: PlayaMapDataMode;
+  officialStreetPolygons?: LatLng[][][];
+  officialStreetLines?: LatLng[][];
+  officialTrashFencePolygons?: LatLng[][][];
+  officialToiletAreas?: PlayaMapArea[];
   loading?: boolean;
   /**
    * Extra fitBounds / flyTo padding [topLeft, bottomRight] so floating chrome
@@ -254,6 +268,11 @@ export function PlayaMap<T extends PlayaMappableProject = BurningManProject>({
   selectedProject,
   years,
   onSelect,
+  mapDataMode = "official-2026",
+  officialStreetPolygons = [],
+  officialStreetLines = [],
+  officialTrashFencePolygons = [],
+  officialToiletAreas = [],
   loading = false,
   edgePadding,
   beacons = [],
@@ -279,27 +298,35 @@ export function PlayaMap<T extends PlayaMappableProject = BurningManProject>({
   onUserLocation = null,
 }: PlayaMapProps<T>) {
   const primaryYear = years[0] ?? 2026;
-  const man = manCenterForYear(primaryYear);
+  const man = manCenterForYear(primaryYear, mapDataMode);
 
   const rings = useMemo(
-    () => [
-      playaRingLatLngs(2500, man),
-      playaRingLatLngs(4000, man),
-      playaRingLatLngs(5755, man),
-    ],
-    [man],
+    () =>
+      mapDataMode === "legacy"
+        ? [
+            playaRingLatLngs(2500, man),
+            playaRingLatLngs(4000, man),
+            playaRingLatLngs(5755, man),
+          ]
+        : [],
+    [man, mapDataMode],
   );
 
   const spokes = useMemo(
     () =>
-      CLOCK_LABELS.map(({ hour, label }) => {
+      mapDataMode === "legacy" ? CLOCK_LABELS.map(({ hour, label }) => {
         const outer = clockRadiusToLatLng(hour, 0, 6200, man);
         return {
           label,
           positions: [man, outer] as [LatLng, LatLng],
         };
-      }),
-    [man],
+      }) : [],
+    [man, mapDataMode],
+  );
+
+  const beaconsById = useMemo(
+    () => new Map(beacons.map((beacon) => [beacon.id, beacon])),
+    [beacons],
   );
 
   const playaBounds = useMemo(
@@ -345,12 +372,95 @@ export function PlayaMap<T extends PlayaMappableProject = BurningManProject>({
           shiftKeyRotate: false,
         } as Record<string, unknown>)}
       >
-        <OfflineAwareImageryLayer />
+        <OfflineAwareImageryLayer opacity={0.16} />
         <MapLayerPanes />
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
           opacity={0.55}
         />
+
+        {mapDataMode === "official-2026" &&
+          officialStreetPolygons.map((polygon, index) => (
+            <Polygon
+              key={`official-streets-${index}`}
+              positions={polygon.map((ring) =>
+                ring.map((point) => [point.lat, point.lng] as [number, number]),
+              )}
+              interactive={false}
+              pathOptions={{
+                color: "#f4e7c8",
+                weight: 1.1,
+                opacity: 0.72,
+                fillColor: "#17130f",
+                fillOpacity: 0.08,
+              }}
+            />
+          ))}
+
+        {mapDataMode === "official-2026" &&
+          officialStreetLines.map((line, index) => (
+            <Polyline
+              key={`official-street-line-${index}`}
+              positions={line.map(
+                (point) => [point.lat, point.lng] as [number, number],
+              )}
+              interactive={false}
+              pathOptions={{
+                className: "playa-street-line",
+                color: "#f4e7c8",
+                weight: 1,
+                opacity: 0.5,
+                lineCap: "round",
+              }}
+            />
+          ))}
+
+        {mapDataMode === "official-2026" &&
+          officialTrashFencePolygons.map((polygon, polygonIndex) =>
+            polygon.map((ring, ringIndex) => (
+              <Polyline
+                key={`official-trash-fence-${polygonIndex}-${ringIndex}`}
+                positions={ring.map(
+                  (point) => [point.lat, point.lng] as [number, number],
+                )}
+                interactive={false}
+                pathOptions={{
+                  className: "playa-trash-fence",
+                  color: "#e8912e",
+                  weight: 2.5,
+                  opacity: 0.9,
+                  dashArray: "8 6",
+                  lineCap: "square",
+                }}
+              />
+            )),
+          )}
+
+        {mapDataMode === "official-2026" &&
+          officialToiletAreas.map((area) => {
+            const beacon = beaconsById.get(area.id);
+            return (
+              <Polygon
+                key={area.id}
+                positions={area.rings.map((ring) =>
+                  ring.map((point) => [point.lat, point.lng] as [number, number]),
+                )}
+                interactive={Boolean(beacon)}
+                eventHandlers={
+                  beacon && onSelectBeacon
+                    ? { click: () => onSelectBeacon(beacon) }
+                    : undefined
+                }
+                pathOptions={{
+                  color: "#3d8fc4",
+                  weight: area.id === selectedBeaconId ? 3 : 1.5,
+                  opacity: 0.95,
+                  fillColor: "#3d8fc4",
+                  fillOpacity: area.id === selectedBeaconId ? 0.42 : 0.22,
+                }}
+              />
+            );
+          })}
 
         {rings.map((ring, index) => (
           <Polyline
@@ -638,7 +748,12 @@ function ServiceBeaconMarkers({
             key={beacon.id}
             position={[beacon.lat, beacon.lng]}
             pane={PANE_SERVICES}
-            icon={createServicePinIcon(beacon.kind, selected, size)}
+            icon={createServicePinIcon(
+              beacon.kind,
+              selected,
+              size,
+              officialSafetyPinVisualOffsetX(beacon.id),
+            )}
             interactive={false}
             zIndexOffset={selected ? 200 : 0}
           >

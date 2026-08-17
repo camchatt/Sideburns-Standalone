@@ -5,6 +5,7 @@
  */
 
 export type LatLng = { lat: number; lng: number };
+export type PlayaMapDataMode = "official-2026" | "legacy";
 
 /** Default public map framing for Black Rock City — camps + inner + outer playa. */
 export const BRC_MAP_BOUNDS = {
@@ -15,7 +16,18 @@ export const BRC_MAP_BOUNDS = {
 } as const;
 
 /** Fallback when a year has no published spike in-repo — prefer current event year. */
-export const DEFAULT_MAN_CENTER: LatLng = { lat: 40.787035, lng: -119.203201 };
+export const LEGACY_2026_MAN_CENTER: LatLng = {
+  lat: 40.787035,
+  lng: -119.203201,
+};
+
+/** Official 2026 Golden Spike published by Burning Man Innovate. */
+export const OFFICIAL_2026_MAN_CENTER: LatLng = {
+  lat: 40.783242,
+  lng: -119.207871,
+};
+
+export const DEFAULT_MAN_CENTER: LatLng = OFFICIAL_2026_MAN_CENTER;
 
 /**
  * Default map home — The Man (golden spike), not the bounding-box midpoint.
@@ -32,7 +44,7 @@ export const PLAYA_MAP_PREVIEW_URL =
 /** Surveyed golden spike (The Man) by event year when known. */
 export const GOLDEN_SPIKE_BY_YEAR: Record<number, LatLng> = {
   2025: { lat: 40.786958, lng: -119.202994 },
-  2026: { lat: 40.787035, lng: -119.203201 },
+  2026: OFFICIAL_2026_MAN_CENTER,
 };
 
 const FEET_TO_M = 0.3048;
@@ -45,7 +57,11 @@ function metersPerDegreeLng(lat: number): number {
   return M_PER_DEG_LAT * Math.cos((lat * Math.PI) / 180);
 }
 
-export function manCenterForYear(eventYear: number): LatLng {
+export function manCenterForYear(
+  eventYear: number,
+  mode: PlayaMapDataMode = "official-2026",
+): LatLng {
+  if (eventYear === 2026 && mode === "legacy") return LEGACY_2026_MAN_CENTER;
   return GOLDEN_SPIKE_BY_YEAR[eventYear] ?? DEFAULT_MAN_CENTER;
 }
 

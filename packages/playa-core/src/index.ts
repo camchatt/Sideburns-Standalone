@@ -12,6 +12,7 @@ export {
   PlayaMap,
   type PlayaFriendPresence,
   type PlayaHuntPin,
+  type PlayaMapArea,
   type PlayaMappableProject,
   type PlayaMapPointLike,
 } from "./PlayaMap";
