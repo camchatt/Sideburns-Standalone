@@ -30,6 +30,7 @@ type BeaconRow = {
   created_by: string | null;
   location_confirmations: unknown;
   principle: string | null;
+  description: string | null;
   updated_at?: string;
 };
 
@@ -68,6 +69,7 @@ export function beaconToRow(beacon: SidequesterBeacon): BeaconRow {
     created_by: beacon.createdBy ?? null,
     location_confirmations: beacon.locationConfirmations ?? [],
     principle: beacon.principle ?? null,
+    description: beacon.description ?? null,
     updated_at: new Date().toISOString(),
   };
 }
@@ -98,6 +100,7 @@ export function rowToBeacon(row: BeaconRow): SidequesterBeacon {
       ? (row.location_confirmations as SidequesterBeacon["locationConfirmations"])
       : [],
     principle: row.principle as SidequesterBeacon["principle"],
+    description: row.description,
   };
 }
 
@@ -185,7 +188,13 @@ export function mergeLocalAndRemoteBeacons(
     byId.set(beacon.id, beacon);
   }
   for (const beacon of remote) {
-    byId.set(beacon.id, beacon);
+    const localBeacon = byId.get(beacon.id);
+    byId.set(beacon.id, {
+      ...beacon,
+      // Preserve a locally cached description while older remote rows are
+      // being migrated; the server remains authoritative once it has one.
+      description: beacon.description ?? localBeacon?.description ?? null,
+    });
   }
   return pruneExpiredBeacons(
     Array.from(byId.values()).sort((a, b) =>

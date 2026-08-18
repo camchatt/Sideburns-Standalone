@@ -352,6 +352,25 @@ function mayRemoveBeacon(beacon: SidequesterBeacon, admin: boolean): boolean {
 
 const EXPIRE_QUICK_HOURS = [12, 24, 48, 72] as const;
 const EXPIRE_HOUR_VALUES = Array.from({ length: 73 }, (_, i) => i); // 0–72h
+
+function formatPostedAgo(createdAt: string, nowMs: number): string | null {
+  const createdMs = new Date(createdAt).getTime();
+  if (!Number.isFinite(createdMs)) return null;
+  const elapsedSeconds = Math.max(0, Math.floor((nowMs - createdMs) / 1000));
+  if (elapsedSeconds < 60) return "Posted just now";
+  const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+  if (elapsedMinutes < 60) return `Posted ${elapsedMinutes}m ago`;
+  const elapsedHours = Math.floor(elapsedMinutes / 60);
+  if (elapsedHours < 24) return `Posted ${elapsedHours}h ago`;
+  const elapsedDays = Math.floor(elapsedHours / 24);
+  if (elapsedDays < 7) return `Posted ${elapsedDays}d ago`;
+  const elapsedWeeks = Math.floor(elapsedDays / 7);
+  if (elapsedWeeks < 5) return `Posted ${elapsedWeeks}w ago`;
+  const elapsedMonths = Math.floor(elapsedDays / 30);
+  if (elapsedMonths < 12) return `Posted ${elapsedMonths}mo ago`;
+  const elapsedYears = Math.floor(elapsedDays / 365);
+  return `Posted ${elapsedYears}y ago`;
+}
 const EXPIRE_MINUTE_VALUES = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 const EXPIRE_PICKER_ITEM_PX = 40;
 
@@ -4444,6 +4463,9 @@ function DetailPane({
     const setPlace = selectedBeacon.place?.trim() || null;
     const locationConfirmed = isBeaconLocationConfirmed(selectedBeacon);
     const confirmCount = selectedBeacon.locationConfirmations?.length ?? 0;
+    const postedAgo = isKindnessBeacon(selectedBeacon.kind)
+      ? formatPostedAgo(selectedBeacon.createdAt, nowMs)
+      : null;
 
     return (
       <div className="space-y-2.5">
@@ -4525,6 +4547,12 @@ function DetailPane({
             </button>
           </div>
         )}
+
+        {postedAgo ? (
+          <p className="text-[10px] uppercase tracking-widest tabular-nums text-foreground/45">
+            {postedAgo}
+          </p>
+        ) : null}
 
         {isSet ? (
           <>
