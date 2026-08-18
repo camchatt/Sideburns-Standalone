@@ -1,4 +1,5 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { withSupabase } from "jsr:@supabase/server@^1";
 
 const API_ROOT = "https://api.burningman.org/api";
 const RECORD_TYPES = ["art", "camp", "event", "mv"] as const;
@@ -56,7 +57,8 @@ async function fetchRecords(
   throw new Error(`${recordType} endpoint exceeded retry limit`);
 }
 
-Deno.serve(async (request) => {
+export default {
+  fetch: withSupabase({ auth: "none" }, async (request, context) => {
   if (request.method !== "POST") {
     return json({ error: "Method not allowed" }, 405);
   }
@@ -64,10 +66,8 @@ Deno.serve(async (request) => {
   const apiKey = Deno.env.get("BURNING_MAN_API_KEY");
   const importSecret = Deno.env.get("BURNING_MAN_IMPORT_SECRET");
   const suppliedSecret = request.headers.get("x-import-secret");
-  const supabaseUrl = Deno.env.get("SUPABASE_URL");
-  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-  if (!apiKey || !importSecret || !supabaseUrl || !serviceRoleKey) {
+  if (!apiKey || !importSecret) {
     return json({ error: "Importer secrets are not fully configured" }, 500);
   }
   if (!suppliedSecret || suppliedSecret !== importSecret) {
@@ -96,9 +96,7 @@ Deno.serve(async (request) => {
   }
 
   const types = [...new Set(requestedTypes)] as RecordType[];
-  const supabase = createClient(supabaseUrl, serviceRoleKey, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
+  const supabase = context.supabaseAdmin;
   const retrievedAt = new Date().toISOString();
   const imported: Partial<Record<RecordType, number>> = {};
 
@@ -156,5 +154,5 @@ Deno.serve(async (request) => {
     const message = error instanceof Error ? error.message : "Import failed";
     return json({ error: message }, 502);
   }
-});
-
+  }),
+};
