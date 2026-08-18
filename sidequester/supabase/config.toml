@@ -1,0 +1,6 @@
+project_id = "nrdzeqfqhfzzcttgppdt"
+
+[functions.import-burning-man]
+# The function authenticates its own long random x-import-secret header.
+verify_jwt = false
+

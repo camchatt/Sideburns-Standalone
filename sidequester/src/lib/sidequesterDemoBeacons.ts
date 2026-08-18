@@ -41,9 +41,7 @@ export function rememberDeletedDemoBeacon(id: string) {
   );
 }
 
-// Demo infrastructure belongs to the preserved legacy map and must not move
-// when official 2026 geometry is enabled or disabled.
-const MAN_2026 = manCenterForYear(2026, "legacy");
+const MAN_2026 = manCenterForYear(2026);
 const DEMO_CREATED_AT = "2026-07-30T16:00:00.000Z";
 
 function at(

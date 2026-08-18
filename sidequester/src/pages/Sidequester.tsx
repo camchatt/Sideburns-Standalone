@@ -37,7 +37,6 @@ import {
   BURNING_MAN_PRINCIPLES,
   canConfirmBeaconLocation,
   canRemoveBeacon,
-  clockRadiusToLatLng,
   completeQuestStop,
   confirmBeaconLocation,
   createQuestThread,
@@ -80,7 +79,6 @@ import {
   loadQuestProgress,
   loadQuestThreads,
   loadSidequesterBeacons,
-  manCenterForYear,
   mergeLocalAndRemoteBeacons,
   migrateBeaconCompletionsToLocal,
   progressFor,
@@ -104,7 +102,6 @@ import {
   type LocalBeaconCompletions,
   type PlayaFriendPresence,
   type PlayaHuntPin,
-  type PlayaMapDataMode,
   type QuestThread,
   type QuestThreadProgress,
   type ResourceCategoryId,
@@ -125,12 +122,6 @@ import {
   mergeSidequesterDemoBeacons,
   rememberDeletedDemoBeacon,
 } from "@/lib/sidequesterDemoBeacons";
-import {
-  OFFICIAL_2026_MAP_ENABLED,
-  applyOfficialInfrastructureBeacons,
-  loadOfficial2026MapData,
-  type Official2026MapData,
-} from "@/lib/officialMapData";
 import { useUserLocation } from "@/lib/useUserLocation";
 
 
@@ -501,12 +492,6 @@ export default function Sidequester({ admin = false }: { admin?: boolean } = {})
   });
   const [loading, setLoading] = useState(true);
   const [mapReady, setMapReady] = useState(false);
-  const [mapDataMode, setMapDataMode] =
-    useState<PlayaMapDataMode>("legacy");
-  const [officialMapData, setOfficialMapData] =
-    useState<Official2026MapData | null>(null);
-  const officialMapDataRef = useRef<Official2026MapData | null>(null);
-  const mapDataModeRef = useRef<PlayaMapDataMode>("legacy");
   const [beacons, setBeacons] = useState<SidequesterBeacon[]>([]);
   const [localCompletions, setLocalCompletions] =
     useState<LocalBeaconCompletions>({});
@@ -595,46 +580,6 @@ export default function Sidequester({ admin = false }: { admin?: boolean } = {})
   /** Tombstones so sync polls can't resurrect a pin we just deleted. */
   const deletedBeaconIdsRef = useRef<Set<string>>(new Set());
 
-  const applyMapInventory = useCallback((rows: SidequesterBeacon[]) => {
-    const withDemos = mergeSidequesterDemoBeacons(rows);
-    return applyOfficialInfrastructureBeacons(
-      withDemos,
-      officialMapDataRef.current?.toiletBeacons ?? [],
-      officialMapDataRef.current?.safetyBeacons ?? [],
-      mapDataModeRef.current === "official-2026",
-    );
-  }, []);
-
-  useEffect(() => {
-    if (!OFFICIAL_2026_MAP_ENABLED) return;
-    let cancelled = false;
-    loadOfficial2026MapData()
-      .then((data) => {
-        if (cancelled) return;
-        officialMapDataRef.current = data;
-        mapDataModeRef.current = "official-2026";
-        setOfficialMapData(data);
-        setMapDataMode("official-2026");
-        setBeacons((previous) =>
-          applyOfficialInfrastructureBeacons(
-            mergeSidequesterDemoBeacons(previous),
-            data.toiletBeacons,
-            data.safetyBeacons,
-            true,
-          ),
-        );
-      })
-      .catch((error) => {
-        console.warn(
-          "[sideburns map] official 2026 assets unavailable; using legacy map",
-          error,
-        );
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   useEffect(() => {
     setMapReady(true);
     const migrated = migrateBeaconCompletionsToLocal(
@@ -642,7 +587,7 @@ export default function Sidequester({ admin = false }: { admin?: boolean } = {})
       loadLocalBeaconCompletions(),
     );
     setLocalCompletions(migrated.localCompletions);
-    const local = applyMapInventory(migrated.beacons);
+    const local = mergeSidequesterDemoBeacons(migrated.beacons);
     setBeacons(promoteScheduledSets(local));
     setQuestThreads(loadQuestThreads());
     setQuestProgress(loadQuestProgress());
@@ -682,7 +627,7 @@ export default function Sidequester({ admin = false }: { admin?: boolean } = {})
           loadLocalBeaconCompletions(),
         );
         setLocalCompletions(again.localCompletions);
-        const merged = applyMapInventory(again.beacons);
+        const merged = mergeSidequesterDemoBeacons(again.beacons);
         setBeacons(promoteScheduledSets(merged));
         if (opts?.pushPending) {
           const pending = merged.filter(
@@ -717,7 +662,7 @@ export default function Sidequester({ admin = false }: { admin?: boolean } = {})
       cancelled = true;
       window.clearInterval(pollId);
     };
-  }, [applyMapInventory]);
+  }, []);
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -846,40 +791,13 @@ export default function Sidequester({ admin = false }: { admin?: boolean } = {})
     [mapHuntPins, selectedHuntPinId],
   );
 
-  const resolvedMappedPlacements = useMemo(
-    () =>
-      placements.mapped.map((point) => {
-        if (point.kind === "exact" || point.project.event_year !== 2026) {
-          return point;
-        }
-        const { clock_hour, clock_minute, distance_feet } = point.project;
-        if (
-          typeof clock_hour !== "number" ||
-          typeof clock_minute !== "number" ||
-          typeof distance_feet !== "number"
-        ) {
-          return point;
-        }
-        const position = clockRadiusToLatLng(
-          clock_hour,
-          clock_minute,
-          distance_feet,
-          manCenterForYear(2026, mapDataMode),
-        );
-        return { ...point, ...position };
-      }),
-    [placements.mapped, mapDataMode],
-  );
-
   const selectedMappedPoint = useMemo(() => {
     if (!selectedProject) return null;
     return (
-      resolvedMappedPlacements.find(
-        (p) => p.project.slug === selectedProject.slug,
-      ) ??
+      placements.mapped.find((p) => p.project.slug === selectedProject.slug) ??
       null
     );
-  }, [resolvedMappedPlacements, selectedProject]);
+  }, [placements.mapped, selectedProject]);
 
   const isSetComposer = isSetBeacon(kind);
   const isOpenSidequestComposer = isKindnessBeacon(kind);
@@ -900,14 +818,14 @@ export default function Sidequester({ admin = false }: { admin?: boolean } = {})
   const canStartQuest =
     sideburnsQuestMode && details.trim().length >= QUEST_GUARDRAILS.titleMin;
   const composerActive = beaconComposerOpen || placingMode;
-  const mapPoints = showProjects ? resolvedMappedPlacements : [];
+  const mapPoints = showProjects ? placements.mapped : [];
   const searchHits = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (q.length < 2) return [] as Array<
       | { kind: "project"; project: BurningManProject; lat: number; lng: number }
       | { kind: "beacon"; beacon: SidequesterBeacon }
     >;
-    const projectHits = resolvedMappedPlacements
+    const projectHits = placements.mapped
       .filter((p) => {
         const title = p.project.title.toLowerCase();
         const artist = (p.project.artist_name_raw ?? "").toLowerCase();
@@ -933,7 +851,7 @@ export default function Sidequester({ admin = false }: { admin?: boolean } = {})
       .slice(0, 5)
       .map((b) => ({ kind: "beacon" as const, beacon: b }));
     return [...projectHits, ...beaconHits].slice(0, 8);
-  }, [searchQuery, resolvedMappedPlacements, beacons]);
+  }, [searchQuery, placements.mapped, beacons]);
 
   const mapBeacons = beacons.filter((b) => {
     // Completed Sideburns drop off this device's map only.
@@ -975,11 +893,6 @@ export default function Sidequester({ admin = false }: { admin?: boolean } = {})
     }
     return layerOn;
   });
-  const visibleOfficialToiletAreas = useMemo(() => {
-    if (mapDataMode !== "official-2026" || !officialMapData) return [];
-    const visibleIds = new Set(mapBeacons.map((beacon) => beacon.id));
-    return officialMapData.toiletAreas.filter((area) => visibleIds.has(area.id));
-  }, [mapBeacons, mapDataMode, officialMapData]);
   const needsEventTime = kind === "popup_event";
   const needsSetStartTime = isSetComposer && !setLive;
   const isSingleSideburnsComposer = isSideburnsSetupForm;
@@ -2101,11 +2014,6 @@ export default function Sidequester({ admin = false }: { admin?: boolean } = {})
   const map = mapReady ? (
     <PlayaMap
       points={mapPoints}
-      mapDataMode={mapDataMode}
-      officialStreetPolygons={officialMapData?.streetPolygons ?? []}
-      officialStreetLines={officialMapData?.streetLines ?? []}
-      officialTrashFencePolygons={officialMapData?.trashFencePolygons ?? []}
-      officialToiletAreas={visibleOfficialToiletAreas}
       selectedProject={
         showProjects ? (selectedMappedPoint?.project ?? selectedProject) : null
       }
