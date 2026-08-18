@@ -4,20 +4,20 @@ import L from "leaflet";
 import type { IconType } from "react-icons";
 import {
   FaBicycle,
-  FaHeart,
   FaIdCard,
   FaKitMedical,
   FaRestroom,
   FaShieldHalved,
+  FaWrench,
 } from "react-icons/fa6";
 import {
   beaconKindMeta,
   type ServiceLayerKind,
 } from "./beacons";
 
-/** Font Awesome 6 — solid heart for camp services; FA pictograms for city infra. */
+/** Font Awesome 6 pictograms for user services and city infrastructure. */
 const SERVICE_ICONS: Record<ServiceLayerKind, IconType> = {
-  service: FaHeart,
+  service: FaWrench,
   med_tent: FaKitMedical,
   ranger: FaShieldHalved,
   dmv: FaIdCard,

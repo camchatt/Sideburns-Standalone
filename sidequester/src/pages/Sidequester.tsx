@@ -14,13 +14,13 @@ import {
   ChevronUp,
   Copy,
   Disc3,
-  Heart,
   Layers,
   MapPin,
   Plus,
   Search,
   Star,
   Trash2,
+  Wrench,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -253,7 +253,7 @@ const LAYER_FILTER_ITEMS: Array<{
     id: "camp_service",
     label: beaconKindMeta("service").label,
     color: LAYER_COLOR_CAMP_SERVICE,
-    icon: Heart,
+    icon: Wrench,
     filled: true,
   },
   {
@@ -304,7 +304,7 @@ const ALL_SERVICE_KINDS_VISIBLE: Record<ServiceLayerKind, boolean> = {
   restroom: true,
 };
 
-/** City = festival infra; heart Service = user-dropped only (independent toggles). */
+/** City = festival infra; wrench Service = user-dropped only (independent toggles). */
 function isServiceKindVisible(
   kind: ServiceLayerKind,
   showCityServices: boolean,
@@ -331,7 +331,7 @@ const COMPOSER_KIND_MARKS: Record<
   sidequest: { imageSrc: "/icons/sidequest-mark.png" },
   popup_event: { imageSrc: "/icons/meetup-mark.png" },
   set: { imageSrc: "/icons/set-mark.png" },
-  service: { icon: Heart },
+  service: { icon: Wrench },
   food: { imageSrc: "/icons/food-mark.png" },
 };
 
@@ -1100,7 +1100,7 @@ export default function Sidequester({ admin = false }: { admin?: boolean } = {})
   const toggleServices = () => {
     setShowServices((prev) => {
       const next = !prev;
-      // City only owns festival infrastructure — not user heart-services.
+      // City only owns festival infrastructure — not user services.
       if (
         !next &&
         placingMode &&
@@ -2743,11 +2743,9 @@ function ServiceKindBadge({
       aria-hidden
     >
       {user ? (
-        <Heart
+        <Wrench
           size={glyph}
-          strokeWidth={0}
-          fill="#3f454c"
-          stroke="none"
+          strokeWidth={2.25}
         />
       ) : Icon ? (
         <Icon size={glyph} />
