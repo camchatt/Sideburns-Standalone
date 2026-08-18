@@ -4,6 +4,10 @@ This function keeps `BURNING_MAN_API_KEY` out of the browser and mobile app.
 It imports official API responses into a protected table; clients read only
 the embargo-aware `burning_man_api_public` view.
 
+The public view is not granted to app clients by default. Importing data does
+not publish it. The commented launch grant in `burning_man_api.sql` must be run
+deliberately when the site is ready.
+
 ## Configure
 
 1. Run `sidequester/supabase/burning_man_api.sql` in the Supabase SQL editor.
@@ -50,4 +54,3 @@ from public.burning_man_api_public
 where event_year = 2026 and record_type in ('art', 'camp')
 limit 20;
 ```
-

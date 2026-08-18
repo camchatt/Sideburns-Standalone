@@ -183,14 +183,14 @@ export const SIDEQUESTER_BEACON_KINDS: BeaconKindMeta[] = [
   },
   {
     id: "med_tent",
-    label: "Medical / ESD",
+    label: "Med Tent",
     color: "#3d8fc4",
     hint: "First aid, medical support",
     layer: "service",
   },
   {
     id: "ranger",
-    label: "Black Rock Rangers",
+    label: "Rangers",
     color: "#3d8fc4",
     hint: "Black Rock Rangers — help, mediation, lost people",
     layer: "service",

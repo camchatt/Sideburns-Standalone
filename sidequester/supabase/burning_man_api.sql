@@ -81,10 +81,14 @@ from public.burning_man_api_records r
 left join public.burning_man_release_schedule s using (event_year);
 
 revoke all on table public.burning_man_api_public from public;
-grant select on table public.burning_man_api_public to anon, authenticated;
+revoke all on table public.burning_man_api_public from anon, authenticated;
 
 comment on view public.burning_man_api_public is
   'Official Burning Man API records with current-year art and camp locations removed until explicitly released.';
+
+-- Deliberate launch switch. Do not run until the site is ready to consume the
+-- official dataset and the release schedule has been verified:
+-- grant select on table public.burning_man_api_public to anon, authenticated;
 
 -- Set release times only after confirming them with Burning Man. Example:
 -- insert into public.burning_man_release_schedule (
@@ -99,4 +103,3 @@ comment on view public.burning_man_api_public is
 --   camp_location_release_at = excluded.camp_location_release_at,
 --   notes = excluded.notes,
 --   updated_at = now();
-

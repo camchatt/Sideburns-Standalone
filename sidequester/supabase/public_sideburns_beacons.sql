@@ -6,6 +6,10 @@
 
 grant usage on schema public to anon, authenticated;
 
+-- Mission Sideburns keep their longer description separate from the pin title.
+alter table public.sideburns_beacons
+  add column if not exists description text;
+
 grant select, insert, update, delete
   on table public.sideburns_beacons
   to anon, authenticated;
